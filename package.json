@@ -1,7 +1,7 @@
 {
-  "name": "space-letters",
+  "name": "pixi-space-letters",
   "version": "0.1.0",
-  "description": "",
+  "description": "Game created to experiment with OOP and have something to showcase in the portfolio",
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html --open",
