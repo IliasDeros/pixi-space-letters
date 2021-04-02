@@ -28,6 +28,11 @@ export class Screen {
     this.playerShip.on("touchstart", callback);
   }
 
+  movePlayerRelative({ x = 0, y = 0 }) {
+    this.playerShip.x += x;
+    this.playerShip.y += y;
+  }
+
   rotatePlayer(factor: number) {
     this.playerShip.rotation += factor;
   }
@@ -37,6 +42,7 @@ export class Screen {
 
     // Add the ship to the scene we are building.
     app.stage.addChild(playerShip);
+
     // Setup the position of the ship
     playerShip.x = app.renderer.width / 2;
     playerShip.y = app.renderer.height - app.renderer.height / 5;
