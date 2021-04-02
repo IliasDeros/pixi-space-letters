@@ -22,6 +22,7 @@ describe("Controller", () => {
     // mock screen
     screen = ({
       movePlayerRelative: jest.fn(),
+      moveBulletRelative() {},
       onClickPlayer() {},
       rotatePlayer() {}
     } as unknown) as Screen;
@@ -42,7 +43,7 @@ describe("Controller", () => {
 
       const event = new KeyboardEvent("keydown", { key: "ArrowRight" });
       documentMock.dispatchEvent(event);
-      await new Promise((res) => setTimeout(res, 0)); // let press be called
+      await new Promise((res) => setTimeout(res, 0)); // let keydown be called
       game.loop();
 
       expect(screen.movePlayerRelative).toHaveBeenCalledWith({
@@ -50,13 +51,14 @@ describe("Controller", () => {
       });
     });
 
-    it("stops the player moving on key release", () => {
+    it("stops the player moving on key release", async () => {
       game.playerSpeedRight = playerSpeedX;
 
       startController();
 
       const event = new KeyboardEvent("keyup", { keyCode: keyCodeRight });
       documentMock.dispatchEvent(event);
+      await new Promise((res) => setTimeout(res, 0)); // let keyup be called
       game.loop();
 
       expect(screen.movePlayerRelative).toHaveBeenCalledWith({
