@@ -1,23 +1,26 @@
+import { DocumentMock } from "../test/DocumentMock";
+
 export const keySpace = " ";
+export type InputHandlerProps = {
+  documentMock?: DocumentMock;
+};
 
 export class InputHandler {
-  onPressRight(movePlayerRight: () => void) {
-    // TODO: run when the right arrow key is pressed
-    // callback()
+  document: Document | DocumentMock;
 
-    // function key(event: Event) {
-    //   console.log(event);
-    // }
-    document.addEventListener("keydown", (e: KeyboardEvent) => {
-      // right
+  constructor({ documentMock }: InputHandlerProps = {}) {
+    this.document = documentMock || document;
+  }
+
+  onPressRight(movePlayerRight: () => void) {
+    this.document.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
         movePlayerRight();
       }
     });
   }
   onPressLeft(movePlayerLeft: () => void) {
-    document.addEventListener("keydown", (e: KeyboardEvent) => {
-      // left
+    this.document.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         movePlayerLeft();
       }
@@ -25,8 +28,7 @@ export class InputHandler {
   }
 
   onReleaseRight(stopPlayerRight: () => void) {
-    document.addEventListener("keyup", (e: KeyboardEvent) => {
-      // right
+    this.document.addEventListener("keyup", (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
         stopPlayerRight();
       }
@@ -34,12 +36,14 @@ export class InputHandler {
   }
 
   onReleaseLeft(stopPlayerLeft: () => void) {
-    document.addEventListener("keyup", (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") stopPlayerLeft();
+    this.document.addEventListener("keyup", (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        stopPlayerLeft();
+      }
     });
   }
   onPressShoot(fireBullet: () => void) {
-    document.addEventListener("keydown", (e: KeyboardEvent) => {
+    this.document.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.key === " ") {
         fireBullet();
       }

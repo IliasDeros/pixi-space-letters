@@ -30,6 +30,8 @@ export class Controller {
     const { inputHandler, game } = this;
 
     inputHandler.onPressRight(game.movePlayerRight);
+    inputHandler.onPressLeft(game.movePlayerLeft);
     inputHandler.onReleaseRight(game.stopPlayerRight);
+    inputHandler.onReleaseLeft(game.stopPlayerLeft);
   }
 }

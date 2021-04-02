@@ -34,7 +34,7 @@ let ship: Sprite;
 // load the texture we need
 app.loader.add("ship", shipPng).load((loader, resources) => {
   ship = new PIXI.Sprite(resources.ship.texture);
-
+  // screen.addText("JC The Great")
   screen.addPlayer(ship);
 
   // Listen for frame updates

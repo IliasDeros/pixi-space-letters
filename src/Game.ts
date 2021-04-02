@@ -10,6 +10,7 @@ type GameProps = {
 export class Game {
   playerRotation = playerRotationSpeed;
   playerSpeedRight = 0;
+  playerSpeedLeft = 0;
   screen: Screen;
 
   constructor({ screen }: GameProps) {
@@ -17,19 +18,24 @@ export class Game {
   }
 
   loop() {
-    const { playerRotation, playerSpeedRight, screen } = this;
+    const { playerRotation, playerSpeedRight, playerSpeedLeft, screen } = this;
     screen.rotatePlayer(playerRotation);
     screen.movePlayerRelative({
-      x: playerSpeedRight
+      x: playerSpeedRight + playerSpeedLeft
     });
   }
 
   movePlayerRight = () => {
     this.playerSpeedRight = playerSpeedX;
   };
-
+  movePlayerLeft = () => {
+    this.playerSpeedLeft = -playerSpeedX;
+  };
   stopPlayerRight = () => {
     this.playerSpeedRight = 0;
+  };
+  stopPlayerLeft = () => {
+    this.playerSpeedLeft = 0;
   };
 
   togglePlayerRotation = () => {

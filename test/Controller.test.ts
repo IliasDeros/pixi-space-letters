@@ -1,7 +1,8 @@
-import { InputHandler } from "./InputHandler";
-import { Controller } from "./Controller";
-import { Screen } from "./Screen";
-import { playerSpeedX, Game } from "./Game";
+import { InputHandler } from "../src/InputHandler";
+import { Controller } from "../src/Controller";
+import { Screen } from "../src/Screen";
+import { playerSpeedX, Game } from "../src/Game";
+import { DocumentMock } from "./DocumentMock";
 
 const keyCodeRight = 39;
 
@@ -13,8 +14,11 @@ describe("Controller", () => {
   let screen: Screen;
   let game: Game;
   let startController: () => Controller;
+  let documentMock: DocumentMock;
 
   beforeEach(() => {
+    documentMock = new DocumentMock();
+
     // mock screen
     screen = ({
       movePlayerRelative: jest.fn(),
@@ -24,21 +28,20 @@ describe("Controller", () => {
 
     startController = () => {
       game = new Game({ screen });
-      inputHandler = new InputHandler();
+      inputHandler = new InputHandler({ documentMock });
       const controller = new Controller({ inputHandler, game, screen });
       controller.start();
       return controller;
     };
   });
 
-  // SKipping because the event handling doesn't work :(
-  describe.skip("#handlePlayerMovement", () => {
+  // Skipping because the event handling doesn't work :(
+  describe("#handlePlayerMovement", () => {
     it("moves the player right on key press", async () => {
       startController();
 
-      // @ts-ignore dispatchEvent needs Event, not KeyboardEvent
-      const event = new Event("keydown", { key: "ArrowRight" });
-      document.dispatchEvent(event);
+      const event = new KeyboardEvent("keydown", { key: "ArrowRight" });
+      documentMock.dispatchEvent(event);
       await new Promise((res) => setTimeout(res, 0)); // let press be called
       game.loop();
 
@@ -52,9 +55,8 @@ describe("Controller", () => {
 
       startController();
 
-      // @ts-ignore dispatchEvent needs a Event, not KeyboardEvent
-      const event = new Event("keyup", { keyCode: keyCodeRight });
-      document.dispatchEvent(event);
+      const event = new KeyboardEvent("keyup", { keyCode: keyCodeRight });
+      documentMock.dispatchEvent(event);
       game.loop();
 
       expect(screen.movePlayerRelative).toHaveBeenCalledWith({
