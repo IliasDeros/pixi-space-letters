@@ -13,14 +13,14 @@ export class InputHandler {
   }
 
   onPressRight(movePlayerRight: () => void) {
-    this.document.addEventListener("keydown", (e: KeyboardEvent) => {
+    this.onKeydown((e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
         movePlayerRight();
       }
     });
   }
   onPressLeft(movePlayerLeft: () => void) {
-    this.document.addEventListener("keydown", (e: KeyboardEvent) => {
+    this.onKeydown((e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         movePlayerLeft();
       }
@@ -28,7 +28,7 @@ export class InputHandler {
   }
 
   onReleaseRight(stopPlayerRight: () => void) {
-    this.document.addEventListener("keyup", (e: KeyboardEvent) => {
+    this.onKeyup((e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
         stopPlayerRight();
       }
@@ -36,17 +36,26 @@ export class InputHandler {
   }
 
   onReleaseLeft(stopPlayerLeft: () => void) {
-    this.document.addEventListener("keyup", (e: KeyboardEvent) => {
+    this.onKeyup((e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         stopPlayerLeft();
       }
     });
   }
+
   onPressShoot(fireBullet: () => void) {
-    this.document.addEventListener("keydown", (e: KeyboardEvent) => {
+    this.onKeydown((e: KeyboardEvent) => {
       if (e.key === " ") {
         fireBullet();
       }
     });
+  }
+
+  private onKeydown(callback: (e: KeyboardEvent) => void) {
+    this.document.addEventListener("keydown", callback);
+  }
+
+  private onKeyup(callback: (e: KeyboardEvent) => void) {
+    this.document.addEventListener("keyup", callback);
   }
 }

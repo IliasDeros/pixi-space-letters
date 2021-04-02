@@ -1,54 +1,83 @@
-import { Application, Sprite } from "pixi.js";
+import { Application, Sprite, Texture } from "pixi.js";
+import { ScreenDrawer } from "./ScreenDrawer";
 
 export type ScreenProps = {
   app: Application;
 };
 
+export type ScreenInitializeProps = {
+  ship: Sprite;
+  bulletTexture: Texture;
+};
+
 export class Screen {
   app: Application;
-  playerShip!: Sprite;
+  bulletSprites: Sprite[];
+  playerSprite!: Sprite;
+  screenDrawer!: ScreenDrawer;
 
   constructor({ app }: ScreenProps) {
     this.app = app;
-
-    document.body.appendChild(app.view);
-    app.renderer.view.style.position = "absolute";
-    app.renderer.view.style.display = "block";
-    app.renderer.resize(window.innerWidth, window.innerHeight);
+    this.bulletSprites = [];
   }
 
-  addPlayer(sprite: Sprite) {
-    this.playerShip = sprite;
+  initialize({ bulletTexture, ship }: ScreenInitializeProps) {
+    this.screenDrawer = new ScreenDrawer({
+      app: this.app,
+      bulletTexture
+    });
+
+    this.addPlayer(ship);
+  }
+
+  addBullet = () => {
+    const spawn = this.getBulletSpawn();
+    const bulletSprite = this.screenDrawer.addBullet(spawn);
+    this.bulletSprites.push(bulletSprite);
+  };
+
+  addPlayer = (sprite: Sprite) => {
+    const { app } = this;
+    this.playerSprite = sprite;
     sprite.interactive = true;
-    this.initializePlayer();
-  }
+
+    this.screenDrawer.addPlayer({
+      playerSprite: sprite,
+      x: app.renderer.width / 2,
+      y: app.renderer.height - app.renderer.height / 5
+    });
+  };
 
   onClickPlayer(callback: () => void) {
-    this.playerShip.on("mousedown", callback);
-    this.playerShip.on("touchstart", callback);
+    this.playerSprite.on("mousedown", callback);
+    this.playerSprite.on("touchstart", callback);
   }
 
   movePlayerRelative({ x = 0, y = 0 }) {
-    this.playerShip.x += x;
-    this.playerShip.y += y;
+    this.playerSprite.x += x;
+    this.playerSprite.y += y;
+  }
+
+  moveBulletRelative({ y = 0 }) {
+    this.bulletSprites.forEach((sprite) => (sprite.y += y));
   }
 
   rotatePlayer(factor: number) {
-    this.playerShip.rotation += factor;
+    this.playerSprite.rotation += factor;
   }
 
-  private initializePlayer() {
-    const { app, playerShip } = this;
+  /** Spawn on top of the player */
+  private getBulletSpawn() {
+    const { playerSprite } = this;
+    const playerCenter = playerSprite.x + playerSprite.width / 2;
+    const playerTop = playerSprite.y;
 
-    // Add the ship to the scene we are building.
-    app.stage.addChild(playerShip);
+    const bulletImageOffsetX = 20;
+    const bulletImageOffsetY = -5;
 
-    // Setup the position of the ship
-    playerShip.x = app.renderer.width / 2;
-    playerShip.y = app.renderer.height - app.renderer.height / 5;
-
-    // Rotate around the center
-    playerShip.anchor.x = 0.5;
-    playerShip.anchor.y = 0.5;
+    return {
+      x: bulletImageOffsetX + playerCenter,
+      y: playerTop + bulletImageOffsetY
+    };
   }
 }

@@ -1,14 +1,13 @@
 import { Screen } from "./Screen";
 
-export const playerRotationSpeed = 0.01;
 export const playerSpeedX = 1;
+export const bulletSpeedY = -1;
 
 type GameProps = {
   screen: Screen;
 };
 
 export class Game {
-  playerRotation = playerRotationSpeed;
   playerSpeedRight = 0;
   playerSpeedLeft = 0;
   screen: Screen;
@@ -18,11 +17,11 @@ export class Game {
   }
 
   loop() {
-    const { playerRotation, playerSpeedRight, playerSpeedLeft, screen } = this;
-    screen.rotatePlayer(playerRotation);
+    const { playerSpeedRight, playerSpeedLeft, screen } = this;
     screen.movePlayerRelative({
       x: playerSpeedRight + playerSpeedLeft
     });
+    screen.moveBulletRelative({ y: bulletSpeedY });
   }
 
   movePlayerRight = () => {
@@ -36,9 +35,5 @@ export class Game {
   };
   stopPlayerLeft = () => {
     this.playerSpeedLeft = 0;
-  };
-
-  togglePlayerRotation = () => {
-    this.playerRotation = this.playerRotation ? 0 : playerRotationSpeed;
   };
 }

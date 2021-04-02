@@ -1,10 +1,13 @@
 import * as PIXI from "pixi.js";
 import { Sprite } from "pixi.js";
-import shipPng from "./ship.png";
 import { Controller } from "./Controller";
 import { InputHandler } from "./InputHandler";
 import { Game } from "./Game";
 import { Screen } from "./Screen";
+
+// Import assets
+import bulletPng from "../assets/bullet.png";
+import shipPng from "../assets/ship.png";
 
 const app = new PIXI.Application();
 PIXI.utils.clearTextureCache(); // Reset cache between reloads
@@ -29,15 +32,21 @@ const game = new Game({ screen });
 // update game data on collision
 const controller = new Controller({ inputHandler, game, screen });
 
-let ship: Sprite;
-
 // load the texture we need
-app.loader.add("ship", shipPng).load((loader, resources) => {
-  ship = new PIXI.Sprite(resources.ship.texture);
-  // screen.addText("JC The Great")
-  screen.addPlayer(ship);
+app.loader
+  .add("ship", shipPng)
+  .add("bullet", bulletPng)
+  .load((loader, resources) => {
+    const ship = new PIXI.Sprite(resources.ship.texture);
 
-  // Listen for frame updates
-  app.ticker.add(() => game.loop());
-  controller.start();
-});
+    screen.initialize({
+      bulletTexture: resources.bullet.texture,
+      ship: ship
+    });
+    screen.addPlayer(ship);
+    screen.addBullet(); // Demo bullet
+
+    // Listen for frame updates
+    app.ticker.add(() => game.loop());
+    controller.start();
+  });

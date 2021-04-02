@@ -20,18 +20,16 @@ export class Controller {
   }
 
   start() {
-    const { game, screen } = this;
-
     this.handlePlayerMovement();
-    screen.onClickPlayer(game.togglePlayerRotation);
   }
 
   private handlePlayerMovement() {
-    const { inputHandler, game } = this;
+    const { inputHandler, game, screen } = this;
 
     inputHandler.onPressRight(game.movePlayerRight);
     inputHandler.onPressLeft(game.movePlayerLeft);
     inputHandler.onReleaseRight(game.stopPlayerRight);
     inputHandler.onReleaseLeft(game.stopPlayerLeft);
+    inputHandler.onPressShoot(screen.addBullet);
   }
 }
