@@ -1,6 +1,7 @@
 import { Screen } from "./Screen";
 
-const playerRotationSpeed = 0.01;
+export const playerRotationSpeed = 0.01;
+export const playerSpeedX = 1;
 
 type GameProps = {
   screen: Screen;
@@ -8,6 +9,7 @@ type GameProps = {
 
 export class Game {
   playerRotation = playerRotationSpeed;
+  playerSpeedRight = 0;
   screen: Screen;
 
   constructor({ screen }: GameProps) {
@@ -15,16 +17,19 @@ export class Game {
   }
 
   loop() {
-    const { playerRotation, screen } = this;
+    const { playerRotation, playerSpeedRight, screen } = this;
     screen.rotatePlayer(playerRotation);
+    screen.movePlayerRelative({
+      x: playerSpeedRight
+    });
   }
 
   movePlayerRight = () => {
-    throw new Error("Not implemented yet");
+    this.playerSpeedRight = playerSpeedX;
   };
 
   stopPlayerRight = () => {
-    throw new Error("Not implemented yet");
+    this.playerSpeedRight = 0;
   };
 
   togglePlayerRotation = () => {
