@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Application, Texture, Sprite } from "pixi.js";
+import { Stars } from "./Stars";
 
 export type ScreenDrawerProps = {
   app: Application;
@@ -26,6 +27,13 @@ export class ScreenDrawer {
     app.renderer.view.style.position = "absolute";
     app.renderer.view.style.display = "block";
     app.renderer.resize(window.innerWidth, window.innerHeight);
+  }
+
+  addBackground() {
+    const { app } = this;
+    const stars = new Stars({ app } as any);
+    stars.reset();
+    window.onresize = stars.renderFullScreen;
   }
 
   addBullet({ x, y }: { x: number; y: number }) {

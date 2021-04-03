@@ -1,7 +1,5 @@
-import * as PIXI from "pixi.js";
 import { Application, Sprite, Texture } from "pixi.js";
 import { ScreenDrawer } from "./ScreenDrawer";
-import { Game } from "./Game";
 
 export type ScreenProps = {
   app: Application;
@@ -24,11 +22,11 @@ export class Screen {
   }
 
   initialize({ bulletTexture, ship }: ScreenInitializeProps) {
-    this.screenDrawer = new ScreenDrawer({
-      app: this.app,
-      bulletTexture
-    });
+    const { app } = this;
+    this.screenDrawer = new ScreenDrawer({ app, bulletTexture });
 
+    // Add stars background
+    this.screenDrawer.addBackground();
     this.addPlayer(ship);
   }
 

@@ -8,7 +8,9 @@ import { Screen } from "./Screen";
 import bulletPng from "../assets/bullet.png";
 import shipPng from "../assets/ship.png";
 
-const app = new PIXI.Application();
+const app = new PIXI.Application({
+  backgroundAlpha: 0
+});
 PIXI.utils.clearTextureCache(); // Reset cache between reloads
 
 // Screen
@@ -42,7 +44,7 @@ app.loader
       bulletTexture: resources.bullet.texture,
       ship: ship
     });
-    screen.addPlayer(ship);
+
     screen.addBullet(); // Demo bullet
     screen.addText("JC JIMMY");
 
