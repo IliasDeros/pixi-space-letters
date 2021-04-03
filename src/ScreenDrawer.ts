@@ -17,23 +17,19 @@ type AddTextProps = {
 export class ScreenDrawer {
   app: Application;
   bulletTexture: Texture;
+  stars: Stars;
 
   constructor({ app, bulletTexture }: ScreenDrawerProps) {
     this.app = app;
     this.bulletTexture = bulletTexture;
+    // Add stars background
+    this.stars = new Stars({ app } as any);
 
     document.body.appendChild(app.view);
 
     app.renderer.view.style.position = "absolute";
     app.renderer.view.style.display = "block";
     app.renderer.resize(window.innerWidth, window.innerHeight);
-  }
-
-  addBackground() {
-    const { app } = this;
-    const stars = new Stars({ app } as any);
-    stars.reset();
-    window.onresize = stars.renderFullScreen;
   }
 
   addBullet({ x, y }: { x: number; y: number }) {
@@ -93,5 +89,9 @@ export class ScreenDrawer {
       fontSize: 64,
       wordWrap: true
     });
+  }
+
+  onWindowResize() {
+    this.stars.renderFullScreen();
   }
 }

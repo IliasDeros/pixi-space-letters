@@ -33,6 +33,16 @@ const game = new Game({ screen });
 // update game data on collision
 const controller = new Controller({ inputHandler, game, screen });
 
+// Util for logging
+let frameCounter = 0;
+function logGameMessage() {
+  frameCounter++;
+  if (Game.message && frameCounter % 120 === 0) {
+    frameCounter = 0;
+    console.log("Game.message: " + Game.message);
+  }
+}
+
 // load the texture we need
 app.loader
   .add("ship", shipPng)
@@ -40,23 +50,19 @@ app.loader
   .load((loader, resources) => {
     const ship = new PIXI.Sprite(resources.ship.texture);
 
+    // Set up view
     screen.initialize({
       bulletTexture: resources.bullet.texture,
+      text: "JC JIMMY",
       ship: ship
     });
-
     screen.addBullet(); // Demo bullet
-    screen.addText("JC JIMMY");
+    controller.start();
+    window.onresize = () => screen.onWindowResize();
 
     // Listen for frame updates
-    let i = 0;
-    app.ticker.add((delta) => {
-      i++;
-      if (Game.message && i % 120 === 0) {
-        i = 0;
-        console.log("Game.message: " + Game.message);
-      }
+    app.ticker.add(() => {
+      logGameMessage();
       game.loop();
     });
-    controller.start();
   });

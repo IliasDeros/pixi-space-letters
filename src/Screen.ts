@@ -8,6 +8,7 @@ export type ScreenProps = {
 export type ScreenInitializeProps = {
   ship: Sprite;
   bulletTexture: Texture;
+  text: string;
 };
 
 export class Screen {
@@ -21,62 +22,17 @@ export class Screen {
     this.app = app;
   }
 
-  initialize({ bulletTexture, ship }: ScreenInitializeProps) {
+  initialize({ bulletTexture, ship, text }: ScreenInitializeProps) {
     const { app } = this;
     this.screenDrawer = new ScreenDrawer({ app, bulletTexture });
-
-    // Add stars background
-    this.screenDrawer.addBackground();
     this.addPlayer(ship);
+    this.addText(text);
   }
 
   addBullet = () => {
     const spawn = this.getBulletSpawn();
     const bulletSprite = this.screenDrawer.addBullet(spawn);
     this.bulletSprites.push(bulletSprite);
-  };
-
-  addText = (text: string) => {
-    const { app, screenDrawer } = this;
-    const lettersStartY = app.renderer.height / 10;
-
-    // Split up words
-    const words = text.split(" ");
-
-    // Draw each letters in the words individually
-    words.reduce((y, word) => {
-      const wordText = screenDrawer.generateText(word);
-      const wordWidth = wordText.width;
-
-      // Center the word horizontally
-      const screenCenterX = app.renderer.width / 2;
-      const wordStartX = screenCenterX - wordWidth / 2;
-      word.split("").reduce((x, letter) => {
-        const letterSprite = screenDrawer.addText({
-          text: letter,
-          x,
-          y
-        });
-
-        this.letterSprites.push(letterSprite);
-
-        return x + letterSprite.width;
-      }, wordStartX);
-
-      return y + wordText.height;
-    }, lettersStartY);
-  };
-
-  addPlayer = (sprite: Sprite) => {
-    const { app } = this;
-    this.playerSprite = sprite;
-    sprite.interactive = true;
-
-    this.screenDrawer.addPlayer({
-      playerSprite: sprite,
-      x: app.renderer.width / 2,
-      y: app.renderer.height - app.renderer.height / 5
-    });
   };
 
   limitPlayerX() {
@@ -107,9 +63,56 @@ export class Screen {
     this.bulletSprites.forEach((sprite) => (sprite.y += y));
   }
 
+  onWindowResize() {
+    this.screenDrawer.onWindowResize();
+  }
+
   rotatePlayer(factor: number) {
     this.playerSprite.rotation += factor;
   }
+
+  private addText = (text: string) => {
+    const { app, screenDrawer } = this;
+    const lettersStartY = app.renderer.height / 10;
+
+    // Split up words
+    const words = text.split(" ");
+
+    // Draw each letters in the words individually
+    words.reduce((y, word) => {
+      const wordText = screenDrawer.generateText(word);
+      const wordWidth = wordText.width;
+
+      // Center the word horizontally
+      const screenCenterX = app.renderer.width / 2;
+      const wordStartX = screenCenterX - wordWidth / 2;
+      word.split("").reduce((x, letter) => {
+        const letterSprite = screenDrawer.addText({
+          text: letter,
+          x,
+          y
+        });
+
+        this.letterSprites.push(letterSprite);
+
+        return x + letterSprite.width;
+      }, wordStartX);
+
+      return y + wordText.height;
+    }, lettersStartY);
+  };
+
+  private addPlayer = (sprite: Sprite) => {
+    const { app } = this;
+    this.playerSprite = sprite;
+    sprite.interactive = true;
+
+    this.screenDrawer.addPlayer({
+      playerSprite: sprite,
+      x: app.renderer.width / 2,
+      y: app.renderer.height - app.renderer.height / 5
+    });
+  };
 
   /** Spawn on top of the player */
   private getBulletSpawn() {
