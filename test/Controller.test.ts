@@ -36,7 +36,6 @@ describe("Controller", () => {
     };
   });
 
-  // Skipping because the event handling doesn't work :(
   describe("#handlePlayerMovement", () => {
     it("moves the player right on key press", async () => {
       startController();
