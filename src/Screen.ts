@@ -59,7 +59,9 @@ export class Screen {
           x,
           y
         });
+
         this.letterSprites.push(letterSprite);
+
         return x + letterSprite.width;
       }, wordStartX);
 
@@ -82,13 +84,10 @@ export class Screen {
   limitPlayerX() {
     const fusee = this.playerSprite;
 
-    if (fusee.x >= this.app.renderer.width) {
-      fusee.x = this.app.renderer.width;
-    }
-    if (fusee.x <= 0) {
-      fusee.x = 0;
-    }
+    fusee.x = Math.min(fusee.x, this.app.renderer.width);
+    fusee.x = Math.max(fusee.x, 0);
   }
+
   onClickPlayer(callback: () => void) {
     this.playerSprite.on("mousedown", callback);
     this.playerSprite.on("touchstart", callback);

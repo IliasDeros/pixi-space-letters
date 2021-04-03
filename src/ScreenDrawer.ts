@@ -82,7 +82,7 @@ export class ScreenDrawer {
       align: "center",
       fill: 0x4cbb17,
       fontFamily: "Arial Black",
-      fontSize: 48,
+      fontSize: 64,
       wordWrap: true
     });
   }
