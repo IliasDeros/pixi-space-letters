@@ -82,10 +82,14 @@ export class Screen {
   };
 
   limitPlayerX() {
-    const fusee = this.playerSprite;
+    const ship = this.playerSprite;
 
-    fusee.x = Math.min(fusee.x, this.app.renderer.width);
-    fusee.x = Math.max(fusee.x, 0);
+    const offsetX = ship.width / 2;
+    const maxPlayerX = this.app.renderer.width - offsetX;
+    const minPlayerX = 0 + offsetX;
+
+    ship.x = Math.min(ship.x, maxPlayerX);
+    ship.x = Math.max(ship.x, minPlayerX);
   }
 
   onClickPlayer(callback: () => void) {
