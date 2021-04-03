@@ -207,7 +207,6 @@ export function Stars({ app, callback }) {
   }.bind(this);
 
   this.sineFade = function (particle) {
-    //console.log(particle.alpha);
     particle.rad += particle.radSpeed * 3;
     var fade = (Math.sin(particle.rad) + 1) / 2;
     var alpha = this.starSettings.alphaMin + this.starSettings.alphaMax * fade;
@@ -235,10 +234,6 @@ export function Stars({ app, callback }) {
     }
     particle.pX = particle.x / this.stageSettings.width;
     particle.pY = particle.y / this.stageSettings.height;
-    //star.y -= 10;
-    //if(!star.orgScale) star.orgScale = star.scale.y;
-    //star.scale.y = star.orgScale * 2;
-    //star.scale.x = star.orgScale - 0.4;
   }.bind(this);
 
   this.reset = function () {
@@ -249,21 +244,8 @@ export function Stars({ app, callback }) {
   };
 
   this.renderFullScreen = function () {
-    this.renderer.view.setAttribute("width", window.innerWidth);
     this.stageSettings.width = window.innerWidth;
-
-    this.renderer.view.setAttribute("height", window.innerHeight);
     this.stageSettings.height = window.innerHeight;
-    this.renderer.resize(window.innerWidth, window.innerHeight);
-
-    setTimeout(
-      function () {
-        this.renderer.view.setAttribute("height", window.innerHeight);
-        this.stageSettings.height = window.innerHeight;
-        this.renderer.resize(window.innerWidth, window.innerHeight);
-      }.bind(this),
-      0
-    );
   }.bind(this);
 
   this.init();
