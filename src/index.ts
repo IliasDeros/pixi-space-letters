@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import { Sprite } from "pixi.js";
 import { Controller } from "./Controller";
 import { InputHandler } from "./InputHandler";
 import { Game } from "./Game";
@@ -45,8 +44,17 @@ app.loader
     });
     screen.addPlayer(ship);
     screen.addBullet(); // Demo bullet
+    screen.addText("JC JIMMY");
 
     // Listen for frame updates
-    app.ticker.add(() => game.loop());
+    let i = 0;
+    app.ticker.add((delta) => {
+      i++;
+      if (Game.message && i % 120 === 0) {
+        i = 0;
+        console.log("Game.message: " + Game.message);
+      }
+      game.loop();
+    });
     controller.start();
   });

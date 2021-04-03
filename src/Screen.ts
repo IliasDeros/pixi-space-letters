@@ -1,5 +1,7 @@
+import * as PIXI from "pixi.js";
 import { Application, Sprite, Texture } from "pixi.js";
 import { ScreenDrawer } from "./ScreenDrawer";
+import { Game } from "./Game";
 
 export type ScreenProps = {
   app: Application;
@@ -12,13 +14,13 @@ export type ScreenInitializeProps = {
 
 export class Screen {
   app: Application;
-  bulletSprites: Sprite[];
+  bulletSprites: Sprite[] = [];
+  letterSprites: Sprite[] = [];
   playerSprite!: Sprite;
   screenDrawer!: ScreenDrawer;
 
   constructor({ app }: ScreenProps) {
     this.app = app;
-    this.bulletSprites = [];
   }
 
   initialize({ bulletTexture, ship }: ScreenInitializeProps) {
@@ -36,6 +38,35 @@ export class Screen {
     this.bulletSprites.push(bulletSprite);
   };
 
+  addText = (text: string) => {
+    const { app, screenDrawer } = this;
+    const lettersStartY = app.renderer.height / 10;
+
+    // Split up words
+    const words = text.split(" ");
+
+    // Draw each letters in the words individually
+    words.reduce((y, word) => {
+      const wordText = screenDrawer.generateText(word);
+      const wordWidth = wordText.width;
+
+      // Center the word horizontally
+      const screenCenterX = app.renderer.width / 2;
+      const wordStartX = screenCenterX - wordWidth / 2;
+      word.split("").reduce((x, letter) => {
+        const letterSprite = screenDrawer.addText({
+          text: letter,
+          x,
+          y
+        });
+        this.letterSprites.push(letterSprite);
+        return x + letterSprite.width;
+      }, wordStartX);
+
+      return y + wordText.height;
+    }, lettersStartY);
+  };
+
   addPlayer = (sprite: Sprite) => {
     const { app } = this;
     this.playerSprite = sprite;
@@ -48,6 +79,16 @@ export class Screen {
     });
   };
 
+  limitPlayerX() {
+    const fusee = this.playerSprite;
+
+    if (fusee.x >= this.app.renderer.width) {
+      fusee.x = this.app.renderer.width;
+    }
+    if (fusee.x <= 0) {
+      fusee.x = 0;
+    }
+  }
   onClickPlayer(callback: () => void) {
     this.playerSprite.on("mousedown", callback);
     this.playerSprite.on("touchstart", callback);
@@ -56,6 +97,9 @@ export class Screen {
   movePlayerRelative({ x = 0, y = 0 }) {
     this.playerSprite.x += x;
     this.playerSprite.y += y;
+
+    // Avoid the player going off screen
+    this.limitPlayerX();
   }
 
   moveBulletRelative({ y = 0 }) {

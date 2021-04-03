@@ -1,6 +1,6 @@
 import { Screen } from "./Screen";
 
-export const playerSpeedX = 1;
+export const playerSpeedX = 5;
 export const bulletSpeedY = -1;
 
 type GameProps = {
@@ -11,6 +11,7 @@ export class Game {
   playerSpeedRight = 0;
   playerSpeedLeft = 0;
   screen: Screen;
+  static message = "";
 
   constructor({ screen }: GameProps) {
     this.screen = screen;

@@ -6,6 +6,12 @@ export type ScreenDrawerProps = {
   bulletTexture: Texture;
 };
 
+type AddTextProps = {
+  text: string;
+  x: number;
+  y: number;
+};
+
 // draws things in canvas
 export class ScreenDrawer {
   app: Application;
@@ -59,5 +65,25 @@ export class ScreenDrawer {
     // Rotate around the center
     playerSprite.anchor.x = 0.5;
     playerSprite.anchor.y = 0.5;
+  }
+
+  addText({ text, x, y }: AddTextProps) {
+    const textElement = this.generateText(text);
+
+    textElement.x = x;
+    textElement.y = y;
+
+    this.app.stage.addChild(textElement);
+    return textElement;
+  }
+
+  generateText(text: string) {
+    return new PIXI.Text(text, {
+      align: "center",
+      fill: 0x4cbb17,
+      fontFamily: "Arial Black",
+      fontSize: 48,
+      wordWrap: true
+    });
   }
 }
