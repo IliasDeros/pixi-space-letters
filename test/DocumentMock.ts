@@ -1,3 +1,5 @@
+export type AnyEvent = KeyboardEvent & MouseEvent & TouchEvent
+
 export class DocumentMock {
   eventCallbacks: Record<string, Function[]>
   
@@ -5,7 +7,7 @@ export class DocumentMock {
     this.eventCallbacks = {}
   }
   
-  addEventListener(event: string, callback: (e: KeyboardEvent) => void) {
+  addEventListener(event: string, callback: (e: AnyEvent) => void) {
     this.eventCallbacks[event] ||= []
     this.eventCallbacks[event].push(callback)
   }

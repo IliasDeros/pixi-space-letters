@@ -20,7 +20,7 @@ const screen = new Screen({ app });
 
 // InputHandler - EASY :)
 // keyboard input: Tell the game "right is being pressed/released"
-const inputHandler = new InputHandler();
+const inputHandler = new InputHandler({ app });
 
 // Game
 // This runs the game loop

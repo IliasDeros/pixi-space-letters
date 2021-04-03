@@ -3,6 +3,7 @@ import { Controller } from "../src/Controller";
 import { Screen } from "../src/Screen";
 import { playerSpeedX, Game } from "../src/Game";
 import { DocumentMock } from "./DocumentMock";
+import { Application } from "pixi.js";
 
 const keyCodeRight = 39;
 
@@ -14,9 +15,19 @@ describe("Controller", () => {
   let screen: Screen;
   let game: Game;
   let startController: () => Controller;
+  let appMock: Application;
   let documentMock: DocumentMock;
 
   beforeEach(() => {
+    appMock = ({
+      renderer: {
+        plugins: {
+          interaction: {
+            on() {}
+          }
+        }
+      }
+    } as unknown) as Application;
     documentMock = new DocumentMock();
 
     // mock screen
@@ -29,7 +40,7 @@ describe("Controller", () => {
 
     startController = () => {
       game = new Game({ screen });
-      inputHandler = new InputHandler({ documentMock });
+      inputHandler = new InputHandler({ app: appMock, documentMock });
       const controller = new Controller({ inputHandler, game, screen });
       controller.start();
       return controller;

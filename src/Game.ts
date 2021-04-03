@@ -1,7 +1,7 @@
 import { Screen } from "./Screen";
 
 export const playerSpeedX = 5;
-export const bulletSpeedY = -1;
+export const bulletSpeedY = -3;
 
 type GameProps = {
   screen: Screen;

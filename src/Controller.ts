@@ -28,6 +28,10 @@ export class Controller {
 
     inputHandler.onPressRight(game.movePlayerRight);
     inputHandler.onPressLeft(game.movePlayerLeft);
+    inputHandler.onMouseMove(screen.movePlayerAbsolute);
+    inputHandler.onTouchMove(screen.movePlayerTouch);
+    inputHandler.onTouchEnd(screen.resetPlayerTouch);
+
     inputHandler.onReleaseRight(game.stopPlayerRight);
     inputHandler.onReleaseLeft(game.stopPlayerLeft);
     inputHandler.onPressShoot(screen.addBullet);

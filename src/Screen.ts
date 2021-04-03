@@ -1,6 +1,8 @@
 import { Application, Sprite, Texture } from "pixi.js";
 import { ScreenDrawer } from "./ScreenDrawer";
 
+export const firstTouch = -1;
+
 export type ScreenProps = {
   app: Application;
 };
@@ -17,6 +19,8 @@ export class Screen {
   letterSprites: Sprite[] = [];
   playerSprite!: Sprite;
   screenDrawer!: ScreenDrawer;
+  lastTouchX = firstTouch;
+  lastTouchY = firstTouch;
 
   constructor({ app }: ScreenProps) {
     this.app = app;
@@ -46,18 +50,55 @@ export class Screen {
     ship.x = Math.max(ship.x, minPlayerX);
   }
 
+  limitPlayerY() {
+    const ship = this.playerSprite;
+
+    const offsetYBottom = ship.height / 2;
+    const minPlayerY = this.app.renderer.height / 2;
+    const maxPlayerY = this.app.renderer.height - offsetYBottom;
+
+    ship.y = Math.min(ship.y, maxPlayerY);
+    ship.y = Math.max(ship.y, minPlayerY);
+  }
+
   onClickPlayer(callback: () => void) {
     this.playerSprite.on("mousedown", callback);
     this.playerSprite.on("touchstart", callback);
   }
 
-  movePlayerRelative({ x = 0, y = 0 }) {
+  movePlayerAbsolute = ({ x = 0, y = 0 }) => {
+    this.playerSprite.x = x;
+    this.playerSprite.y = y;
+
+    // Avoid the player going off screen
+    this.limitPlayerX();
+    this.limitPlayerY();
+  };
+
+  movePlayerRelative = ({ x = 0, y = 0 }) => {
     this.playerSprite.x += x;
     this.playerSprite.y += y;
 
     // Avoid the player going off screen
     this.limitPlayerX();
-  }
+    this.limitPlayerY();
+  };
+
+  movePlayerTouch = ({ x = 0, y = 0 }) => {
+    const { lastTouchX, lastTouchY, playerSprite } = this;
+
+    if (lastTouchX !== firstTouch) {
+      playerSprite.x += x - lastTouchX;
+      playerSprite.y += y - lastTouchY;
+
+      // Avoid the player going off screen
+      this.limitPlayerX();
+      this.limitPlayerY();
+    }
+
+    this.lastTouchX = x;
+    this.lastTouchY = y;
+  };
 
   moveBulletRelative({ y = 0 }) {
     this.bulletSprites.forEach((sprite) => (sprite.y += y));
@@ -66,6 +107,11 @@ export class Screen {
   onWindowResize() {
     this.screenDrawer.onWindowResize();
   }
+
+  resetPlayerTouch = () => {
+    this.lastTouchX = firstTouch;
+    this.lastTouchY = firstTouch;
+  };
 
   rotatePlayer(factor: number) {
     this.playerSprite.rotation += factor;
@@ -102,16 +148,15 @@ export class Screen {
     }, lettersStartY);
   };
 
-  private addPlayer = (sprite: Sprite) => {
+  private addPlayer = (playerSprite: Sprite) => {
     const { app } = this;
-    this.playerSprite = sprite;
-    sprite.interactive = true;
+    this.playerSprite = playerSprite;
+    playerSprite.interactive = true;
 
-    this.screenDrawer.addPlayer({
-      playerSprite: sprite,
-      x: app.renderer.width / 2,
-      y: app.renderer.height - app.renderer.height / 5
-    });
+    const x = app.renderer.width / 2;
+    const y = app.renderer.height - app.renderer.height / 5;
+
+    this.screenDrawer.addPlayer({ playerSprite, x, y });
   };
 
   /** Spawn on top of the player */

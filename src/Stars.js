@@ -122,7 +122,7 @@ export function Stars({ app, callback }) {
   this.starSizeDistribution = CubicBezier.config(0.64, 0, 1, 0.14);
 
   this.starSettings = {
-    numParticles: 3500,
+    numParticles: 2000,
     alphaMin: 0.1,
     alphaMax: 0.7,
     fadeSpeedMax: 0.01,
