@@ -56,7 +56,6 @@ app.loader
       text: "JC JIMMY",
       ship: ship
     });
-    screen.addBullet(); // Demo bullet
     controller.start();
     window.onresize = () => screen.onWindowResize();
 
