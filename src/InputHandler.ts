@@ -1,20 +1,25 @@
 import * as PIXI from "pixi.js";
 import { Application } from "pixi.js";
 import { DocumentMock } from "../test/DocumentMock";
+import { WindowMock } from "../test/WindowMock";
 
+export const shootDelayMs = 500
 export const keySpace = " ";
 export type InputHandlerProps = {
   app: Application;
   documentMock?: DocumentMock;
+  windowMock?: WindowMock
 };
 
 export class InputHandler {
   app: Application;
   document: Document | DocumentMock;
+  window: Window | WindowMock
 
-  constructor({ app, documentMock }: InputHandlerProps) {
+  constructor({ app, documentMock, windowMock }: InputHandlerProps) {
     this.app = app;
     this.document = documentMock || document;
+    this.window = windowMock || window;
   }
 
   onPressRight(movePlayerRight: () => void) {
@@ -33,23 +38,36 @@ export class InputHandler {
     this.onKeyup("ArrowLeft", stopPlayerLeft);
   }
 
-  onPressShoot(startFiring: () => void) {
+  onPressShoot(fire: () => void) {
+    const { clearInterval, setInterval, setTimeout } = this.window
     const dom = this.document;
-    dom.addEventListener("mousedown", startFiring);
-    dom.addEventListener("touchstart", startFiring);
+    
+    let intervalId: number | void
+    let canShoot = true
 
-    this.onKeydown(" ", startFiring);
-  }
+    const fireAtInterval = () => {
+      if (!canShoot) {
+        return
+      }
+      
+      canShoot = false
+      fire()
+      intervalId ||= setInterval(fire, shootDelayMs)       
+      setTimeout(() => { canShoot = true }, shootDelayMs)
+    }
+    const cancelInterval = () => intervalId &&= clearInterval(intervalId)
 
-  onReleaseShoot(stopFiring: () => void) {
-    const dom = this.document;
+    // start firing
+    dom.addEventListener("mousedown", fireAtInterval);
+    dom.addEventListener("touchstart", fireAtInterval);
+    this.onKeydown(" ", fireAtInterval);
 
-    dom.addEventListener("mouseup", stopFiring);
-    dom.addEventListener("mouseupoutside", stopFiring);
-    dom.addEventListener("touchend", stopFiring);
-    dom.addEventListener("touchendoutside", stopFiring);
-
-    this.onKeyup(" ", stopFiring);
+    // stop firing
+    dom.addEventListener("mouseup", cancelInterval);
+    dom.addEventListener("mouseupoutside", cancelInterval);
+    dom.addEventListener("touchend", cancelInterval);
+    dom.addEventListener("touchendoutside", cancelInterval);
+    this.onKeyup(" ", cancelInterval);
   }
 
   onMouseMove(movePlayer: (xy: { x: number; y: number }) => void) {

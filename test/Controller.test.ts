@@ -3,6 +3,7 @@ import { Controller } from "../src/Controller";
 import { Screen } from "../src/Screen";
 import { playerSpeedX, Game } from "../src/Game";
 import { DocumentMock } from "./DocumentMock";
+import { WindowMock } from "./WindowMock";
 import { Application } from "pixi.js";
 
 const keyCodeRight = 39;
@@ -17,6 +18,13 @@ describe("Controller", () => {
   let startController: () => Controller;
   let appMock: Application;
   let documentMock: DocumentMock;
+  let windowMock: WindowMock;
+
+  const waitDispatchKey = (keycode: string) => {
+    const event = new KeyboardEvent("keydown", { key: keycode });
+    documentMock.dispatchEvent(event);
+    return new Promise((res) => setTimeout(res, 0)); // let keydown be called
+  };
 
   beforeEach(() => {
     appMock = ({
@@ -29,9 +37,15 @@ describe("Controller", () => {
       }
     } as unknown) as Application;
     documentMock = new DocumentMock();
+    windowMock = {
+      clearInterval: jest.fn(),
+      setInterval: jest.fn(),
+      setTimeout: jest.fn()
+    };
 
     // mock screen
     screen = ({
+      addBullet: jest.fn(),
       movePlayerRelative: jest.fn(),
       moveBulletRelative() {},
       onClickPlayer() {},
@@ -40,20 +54,22 @@ describe("Controller", () => {
 
     startController = () => {
       game = new Game({ screen });
-      inputHandler = new InputHandler({ app: appMock, documentMock });
+      inputHandler = new InputHandler({
+        app: appMock,
+        documentMock,
+        windowMock
+      });
       const controller = new Controller({ inputHandler, game, screen });
       controller.start();
       return controller;
     };
   });
 
-  describe("#handlePlayerMovement", () => {
+  describe("#playerMovement", () => {
     it("moves the player right on key press", async () => {
       startController();
 
-      const event = new KeyboardEvent("keydown", { key: "ArrowRight" });
-      documentMock.dispatchEvent(event);
-      await new Promise((res) => setTimeout(res, 0)); // let keydown be called
+      await waitDispatchKey("ArrowRight");
       game.loop();
 
       expect(screen.movePlayerRelative).toHaveBeenCalledWith({
@@ -73,6 +89,58 @@ describe("Controller", () => {
 
       expect(screen.movePlayerRelative).toHaveBeenCalledWith({
         x: 0
+      });
+    });
+  });
+
+  describe("#playerShooting", () => {
+    const dispatchShoot = () => waitDispatchKey(" ");
+
+    it("fires on space press", async () => {
+      startController();
+
+      await dispatchShoot();
+      game.loop();
+
+      expect(screen.addBullet).toHaveBeenCalled();
+    });
+
+    it("fires every interval on space press", async () => {
+      startController();
+
+      await dispatchShoot();
+      game.loop();
+      const onInterval = (windowMock.setInterval as jest.Mock).mock.calls[0][0];
+      onInterval();
+      game.loop();
+
+      expect(screen.addBullet).toHaveBeenCalledTimes(2);
+    });
+
+    describe("#canShoot", () => {
+      it("cannot fire before the interval is done", async () => {
+        startController();
+
+        await dispatchShoot();
+        game.loop();
+        await dispatchShoot();
+        game.loop();
+
+        expect(screen.addBullet).toHaveBeenCalledTimes(1);
+      });
+
+      it("can fire again after the interval", async () => {
+        startController();
+
+        await dispatchShoot();
+        game.loop();
+        const canShootTimeout = (windowMock.setTimeout as jest.Mock).mock
+          .calls[0][0];
+        canShootTimeout();
+        await dispatchShoot();
+        game.loop();
+
+        expect(screen.addBullet).toHaveBeenCalledTimes(2);
       });
     });
   });
