@@ -54,6 +54,6 @@ export class ScreenCollision {
    * @returns true if the two sprites are in collision
    */
   private intersectSprites(sprite: Sprite, other: Sprite) {
-    return this.bump.rectangleCollision(sprite, other);
+    return this.bump.hitTestRectangle(sprite, other);
   }
 }

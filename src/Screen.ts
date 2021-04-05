@@ -40,6 +40,12 @@ export class Screen {
     this.bulletSprites.push(bulletSprite);
   };
 
+  collisionBulletsLetters() {
+    const { bulletSprites, letterSprites } = this;
+    const collision = new ScreenCollision(bulletSprites, letterSprites);
+    return collision.collidesBulletsLetters();
+  }
+
   limitPlayerX() {
     const ship = this.playerSprite;
 
@@ -105,12 +111,6 @@ export class Screen {
     this.bulletSprites.forEach((sprite) => (sprite.y += y));
   }
 
-  collisionBulletsLetters() {
-    const { bulletSprites, letterSprites } = this;
-    const collision = new ScreenCollision(bulletSprites, letterSprites);
-    return collision.collidesBulletsLetters();
-  }
-
   onWindowResize() {
     this.screenDrawer.onWindowResize();
   }
@@ -123,6 +123,8 @@ export class Screen {
   rotatePlayer(factor: number) {
     this.playerSprite.rotation += factor;
   }
+
+  shootLetter(bullet: Sprite, letter: Sprite) {}
 
   private addText = (text: string) => {
     const { app, screenDrawer } = this;
@@ -169,14 +171,13 @@ export class Screen {
   /** Spawn on top of the player */
   private getBulletSpawn() {
     const { playerSprite } = this;
-    const playerCenter = playerSprite.x + playerSprite.width / 2;
+
     const playerTop = playerSprite.y;
 
-    const bulletImageOffsetX = 20;
-    const bulletImageOffsetY = -5;
+    const bulletImageOffsetY = -45;
 
     return {
-      x: bulletImageOffsetX + playerCenter,
+      x: playerSprite.x,
       y: playerTop + bulletImageOffsetY
     };
   }

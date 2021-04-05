@@ -1,7 +1,7 @@
 import { Screen } from "./Screen";
 
 export const playerSpeedX = 5;
-export const bulletSpeedY = -3;
+export const bulletSpeedY = -8;
 
 type GameProps = {
   screen: Screen;
@@ -36,10 +36,11 @@ export class Game {
 
   shootLetters() {
     // If a letter collides with a bullet,
-    // const collisions = this.screen.collisionBulletsLetters();
-    // if (collisions) {
-    //   // console.log({ collisions });
-    // }
+    const collisions = this.screen.collisionBulletsLetters();
+
+    collisions.forEach((collision) =>
+      this.screen.shootLetter(collision.bullet, collision.letter)
+    );
   }
 
   stopPlayerRight = () => {

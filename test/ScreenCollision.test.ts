@@ -8,7 +8,7 @@ describe("ScreenCollision", () => {
       const bullet = {} as Sprite;
       const letter = {} as Sprite;
       const bumpMock = ({
-        hit: jest
+        hitTestRectangle: jest
           .fn()
           .mockImplementation(
             (sprite, other) => sprite === bullet && other === letter

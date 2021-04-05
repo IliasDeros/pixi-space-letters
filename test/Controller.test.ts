@@ -46,6 +46,7 @@ describe("Controller", () => {
     // mock screen
     screen = ({
       addBullet: jest.fn(),
+      collisionBulletsLetters: jest.fn(() => []),
       movePlayerRelative: jest.fn(),
       moveBulletRelative() {},
       onClickPlayer() {},
