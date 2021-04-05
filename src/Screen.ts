@@ -124,7 +124,26 @@ export class Screen {
     this.playerSprite.rotation += factor;
   }
 
-  shootLetter(bullet: Sprite, letter: Sprite) {}
+  shootLetter(bullet: Sprite, letter: Sprite) {
+    this.removeBullet(bullet);
+    this.removeLetter(letter);
+  }
+
+  private removeBullet(bullet: Sprite) {
+    const { bulletSprites, screenDrawer } = this;
+    const index = bulletSprites.indexOf(bullet);
+
+    bulletSprites.splice(index, 1);
+    screenDrawer.removeSprite(bullet);
+  }
+
+  private removeLetter(letter: Sprite) {
+    const { letterSprites, screenDrawer } = this;
+    const index = letterSprites.indexOf(letter);
+
+    letterSprites.splice(index, 1);
+    screenDrawer.removeSprite(letter);
+  }
 
   private addText = (text: string) => {
     const { app, screenDrawer } = this;

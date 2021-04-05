@@ -50,6 +50,11 @@ export class ScreenDrawer {
     return bulletSprite;
   }
 
+  removeSprite(sprite: Sprite) {
+    const { app } = this;
+    app.stage.removeChild(sprite);
+  }
+
   addPlayer({
     x,
     y,
