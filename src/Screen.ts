@@ -131,18 +131,14 @@ export class Screen {
 
   private removeBullet(bullet: Sprite) {
     const { bulletSprites, screenDrawer } = this;
-    const index = bulletSprites.indexOf(bullet);
-
+    this.bulletSprites = bulletSprites.filter((sprite) => sprite !== bullet);
     screenDrawer.removeSprite(bullet);
-    bulletSprites.splice(index, 1);
   }
 
   private removeLetter(letter: Sprite) {
     const { letterSprites, screenDrawer } = this;
-    const index = letterSprites.indexOf(letter);
-
+    this.letterSprites = letterSprites.filter((sprite) => sprite !== letter);
     screenDrawer.removeSprite(letter);
-    letterSprites.splice(index, 1);
   }
 
   private addText = (text: string) => {
