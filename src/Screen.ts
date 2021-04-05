@@ -133,16 +133,16 @@ export class Screen {
     const { bulletSprites, screenDrawer } = this;
     const index = bulletSprites.indexOf(bullet);
 
-    bulletSprites.splice(index, 1);
     screenDrawer.removeSprite(bullet);
+    bulletSprites.splice(index, 1);
   }
 
   private removeLetter(letter: Sprite) {
     const { letterSprites, screenDrawer } = this;
     const index = letterSprites.indexOf(letter);
 
-    letterSprites.splice(index, 1);
     screenDrawer.removeSprite(letter);
+    letterSprites.splice(index, 1);
   }
 
   private addText = (text: string) => {
