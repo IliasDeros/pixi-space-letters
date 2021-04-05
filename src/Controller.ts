@@ -20,10 +20,10 @@ export class Controller {
   }
 
   start() {
-    this.handlePlayerMovement();
+    this.handleInput();
   }
 
-  private handlePlayerMovement() {
+  private handleInput() {
     const { inputHandler, game, screen } = this;
 
     inputHandler.onPressRight(game.movePlayerRight);
@@ -31,7 +31,6 @@ export class Controller {
     inputHandler.onMouseMove(screen.movePlayerAbsolute);
     inputHandler.onTouchMove(screen.movePlayerTouch);
     inputHandler.onTouchEnd(screen.resetPlayerTouch);
-
     inputHandler.onReleaseRight(game.stopPlayerRight);
     inputHandler.onReleaseLeft(game.stopPlayerLeft);
     inputHandler.onPressShoot(screen.addBullet);

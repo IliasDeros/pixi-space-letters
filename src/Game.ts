@@ -30,23 +30,24 @@ export class Game {
   movePlayerRight = () => {
     this.playerSpeedRight = playerSpeedX;
   };
+
   movePlayerLeft = () => {
     this.playerSpeedLeft = -playerSpeedX;
   };
 
-  shootLetters() {
-    // If a letter collides with a bullet,
+  stopPlayerRight = () => {
+    this.playerSpeedRight = 0;
+  };
+
+  stopPlayerLeft = () => {
+    this.playerSpeedLeft = 0;
+  };
+
+  private shootLetters() {
     const collisions = this.screen.collisionBulletsLetters();
 
     collisions.forEach((collision) =>
       this.screen.shootLetter(collision.bullet, collision.letter)
     );
   }
-
-  stopPlayerRight = () => {
-    this.playerSpeedRight = 0;
-  };
-  stopPlayerLeft = () => {
-    this.playerSpeedLeft = 0;
-  };
 }
