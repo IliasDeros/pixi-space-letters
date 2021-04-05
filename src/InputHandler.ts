@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { Application } from "pixi.js";
 import { DocumentMock } from "../test/DocumentMock";
 import { WindowMock } from "../test/WindowMock";
+import { InputKeyboard } from "./InputKeyboard"
 
 export const shootDelayMs = 500
 export const keySpace = " ";
@@ -15,11 +16,15 @@ export class InputHandler {
   app: Application;
   document: Document | DocumentMock;
   window: Window | WindowMock
-
+  test!: InputKeyboard
+  
   constructor({ app, documentMock, windowMock }: InputHandlerProps) {
     this.app = app;
     this.document = documentMock || document;
     this.window = windowMock || window;
+    const instance = new InputKeyboard("metal")
+    const message = instance.getIci()
+    console.log(message) // metal je suis ici
   }
 
   onPressRight(movePlayerRight: () => void) {

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Application, Texture, Sprite } from "pixi.js";
-import { Stars } from "./Stars";
+import { Stars } from "../vendor/Stars";
 
 export type ScreenDrawerProps = {
   app: Application;

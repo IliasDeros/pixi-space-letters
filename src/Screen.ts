@@ -1,4 +1,5 @@
 import { Application, Sprite, Texture } from "pixi.js";
+import { ScreenCollision } from "./ScreenCollision";
 import { ScreenDrawer } from "./ScreenDrawer";
 
 export const firstTouch = -1;
@@ -102,6 +103,12 @@ export class Screen {
 
   moveBulletRelative({ y = 0 }) {
     this.bulletSprites.forEach((sprite) => (sprite.y += y));
+  }
+
+  collisionBulletsLetters() {
+    const { bulletSprites, letterSprites } = this;
+    const collision = new ScreenCollision(bulletSprites, letterSprites);
+    return collision.collidesBulletsLetters();
   }
 
   onWindowResize() {

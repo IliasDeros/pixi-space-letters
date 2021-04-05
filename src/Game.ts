@@ -19,10 +19,12 @@ export class Game {
 
   loop() {
     const { playerSpeedRight, playerSpeedLeft, screen } = this;
+
     screen.movePlayerRelative({
       x: playerSpeedRight + playerSpeedLeft
     });
     screen.moveBulletRelative({ y: bulletSpeedY });
+    this.shootLetters();
   }
 
   movePlayerRight = () => {
@@ -31,6 +33,15 @@ export class Game {
   movePlayerLeft = () => {
     this.playerSpeedLeft = -playerSpeedX;
   };
+
+  shootLetters() {
+    // If a letter collides with a bullet,
+    // const collisions = this.screen.collisionBulletsLetters();
+    // if (collisions) {
+    //   // console.log({ collisions });
+    // }
+  }
+
   stopPlayerRight = () => {
     this.playerSpeedRight = 0;
   };
