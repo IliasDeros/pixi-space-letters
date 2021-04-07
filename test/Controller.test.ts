@@ -1,4 +1,4 @@
-import { InputHandler } from "../src/InputHandler";
+import { InputManager } from "../src/InputManager";
 import { Controller } from "../src/Controller";
 import { Screen } from "../src/Screen";
 import { playerSpeedX, Game } from "../src/Game";
@@ -12,7 +12,7 @@ const keyCodeRight = 39;
  * Test end to end, except Screen, which is mocked
  */
 describe("Controller", () => {
-  let inputHandler: InputHandler;
+  let inputManager: InputManager;
   let screen: Screen;
   let game: Game;
   let startController: () => Controller;
@@ -55,12 +55,12 @@ describe("Controller", () => {
 
     startController = () => {
       game = new Game({ screen });
-      inputHandler = new InputHandler({
+      inputManager = new InputManager({
         app: appMock,
         documentMock,
         windowMock
       });
-      const controller = new Controller({ inputHandler, game, screen });
+      const controller = new Controller({ inputManager, game, screen });
       controller.start();
       return controller;
     };
