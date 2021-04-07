@@ -60,8 +60,8 @@ app.loader
     window.onresize = () => screen.onWindowResize();
 
     // Listen for frame updates
-    app.ticker.add(() => {
+    app.ticker.add((delta) => {
       logGameMessage();
-      game.loop();
+      game.loop(delta);
     });
   });

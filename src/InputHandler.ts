@@ -2,45 +2,44 @@ import * as PIXI from "pixi.js";
 import { Application } from "pixi.js";
 import { DocumentMock } from "../test/DocumentMock";
 import { WindowMock } from "../test/WindowMock";
-import { InputKeyboard } from "./InputKeyboard"
+import { InputKeyboard } from "./InputKeyboard";
 
-export const shootDelayMs = 500
+export const shootDelayMs = 500;
 export const keySpace = " ";
 export type InputHandlerProps = {
   app: Application;
   documentMock?: DocumentMock;
-  windowMock?: WindowMock
+  windowMock?: WindowMock;
 };
 
 export class InputHandler {
   app: Application;
   document: Document | DocumentMock;
-  window: Window | WindowMock
-  test!: InputKeyboard
-  
+  window: Window | WindowMock;
+  instance: InputKeyboard;
+
   constructor({ app, documentMock, windowMock }: InputHandlerProps) {
     this.app = app;
     this.document = documentMock || document;
     this.window = windowMock || window;
-    const instance = new InputKeyboard("metal")
-    const message = instance.getIci()
-    console.log(message) // metal je suis ici
+
+    this.instance = new InputKeyboard(this.document);
   }
 
   onPressRight(movePlayerRight: () => void) {
-    this.onKeydown("ArrowRight", movePlayerRight);
+    this.instance.onKeydown("ArrowRight", movePlayerRight);
   }
 
   onPressLeft(movePlayerLeft: () => void) {
-    this.onKeydown("ArrowLeft", movePlayerLeft);
+    this.instance.onKeydown("ArrowLeft", movePlayerLeft);
   }
 
   onReleaseRight(stopPlayerRight: () => void) {
-    this.onKeyup("ArrowRight", stopPlayerRight);
+    this.instance.onKeyup("ArrowRight", stopPlayerRight);
   }
 
   onReleaseLeft(stopPlayerLeft: () => void) {
-    this.onKeyup("ArrowLeft", stopPlayerLeft);
+    this.instance.onKeyup("ArrowLeft", stopPlayerLeft);
   }
 
   onPressShoot(fire: () => void) {
@@ -65,16 +64,16 @@ export class InputHandler {
     // start firing
     dom.addEventListener("mousedown", fireAtInterval);
     dom.addEventListener("touchstart", fireAtInterval);
-    this.onKeydown(" ", fireAtInterval);
+    this.instance.onKeydown(" ", fireAtInterval);
 
     // stop firing
     dom.addEventListener("mouseup", cancelInterval);
     dom.addEventListener("mouseupoutside", cancelInterval);
     dom.addEventListener("touchend", cancelInterval);
     dom.addEventListener("touchendoutside", cancelInterval);
-    this.onKeyup(" ", cancelInterval);
+    this.instance.onKeyup(" ", cancelInterval);
   }
-
+  
   onMouseMove(movePlayer: (xy: { x: number; y: number }) => void) {
     const { app } = this;
 
@@ -102,25 +101,5 @@ export class InputHandler {
 
     app.renderer.plugins.interaction.on("touchend", callback);
     app.renderer.plugins.interaction.on("touchendoutside", callback);
-  }
-
-  private onKeydown(key: string, callback: () => void) {
-    this.document.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (e.key !== key) {
-        return;
-      }
-
-      callback();
-    });
-  }
-
-  private onKeyup(key: string, callback: () => void) {
-    this.document.addEventListener("keyup", (e: KeyboardEvent) => {
-      if (e.key !== key) {
-        return;
-      }
-
-      callback();
-    });
   }
 }

@@ -1,10 +1,19 @@
 import { Screen } from "./Screen";
 
+/** Speed is in pixels per second */
 export const playerSpeedX = 5;
 export const bulletSpeedY = -8;
 
-type GameProps = {
+export type GameProps = {
   screen: Screen;
+};
+
+type SpeedByDeltaProps = {
+  /** Time, in milliseconds, since last frame */
+  delta: number;
+
+  /** How much pixels we should move every 60/120 frames */
+  pixelsPerSecond: number;
 };
 
 export class Game {
@@ -17,13 +26,21 @@ export class Game {
     this.screen = screen;
   }
 
-  loop() {
+  loop(frameDeltaMs = 1) {
     const { playerSpeedRight, playerSpeedLeft, screen } = this;
 
+    // Consider frames skipped because the processor was busy
+    const adjustSpeed = (speed: number) => {
+      return this.speedByDelta({
+        delta: frameDeltaMs,
+        pixelsPerSecond: speed
+      });
+    };
+
     screen.movePlayerRelative({
-      x: playerSpeedRight + playerSpeedLeft
+      x: adjustSpeed(playerSpeedRight) + playerSpeedLeft
     });
-    screen.moveBulletRelative({ y: bulletSpeedY });
+    screen.moveBulletRelative({ y: adjustSpeed(bulletSpeedY) });
     this.shootLetters();
   }
 
@@ -42,6 +59,10 @@ export class Game {
   stopPlayerLeft = () => {
     this.playerSpeedLeft = 0;
   };
+
+  private speedByDelta({ delta, pixelsPerSecond }: SpeedByDeltaProps) {
+    return pixelsPerSecond * delta;
+  }
 
   private shootLetters() {
     const collisions = this.screen.collisionBulletsLetters();

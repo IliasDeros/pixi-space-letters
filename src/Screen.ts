@@ -2,6 +2,9 @@ import { Application, Sprite, Texture } from "pixi.js";
 import { ScreenCollision } from "./ScreenCollision";
 import { ScreenDrawer } from "./ScreenDrawer";
 
+export const withoutSprite = (sprites: Sprite[], spriteToRemove: Sprite) => {
+  return sprites.filter((sprite) => sprite !== spriteToRemove);
+};
 export const firstTouch = -1;
 
 export type ScreenProps = {
@@ -46,28 +49,6 @@ export class Screen {
     return collision.collidesBulletsLetters();
   }
 
-  limitPlayerX() {
-    const ship = this.playerSprite;
-
-    const offsetX = ship.width / 2;
-    const maxPlayerX = this.app.renderer.width - offsetX;
-    const minPlayerX = 0 + offsetX;
-
-    ship.x = Math.min(ship.x, maxPlayerX);
-    ship.x = Math.max(ship.x, minPlayerX);
-  }
-
-  limitPlayerY() {
-    const ship = this.playerSprite;
-
-    const offsetYBottom = ship.height / 2;
-    const minPlayerY = this.app.renderer.height / 2;
-    const maxPlayerY = this.app.renderer.height - offsetYBottom;
-
-    ship.y = Math.min(ship.y, maxPlayerY);
-    ship.y = Math.max(ship.y, minPlayerY);
-  }
-
   onClickPlayer(callback: () => void) {
     this.playerSprite.on("mousedown", callback);
     this.playerSprite.on("touchstart", callback);
@@ -76,19 +57,13 @@ export class Screen {
   movePlayerAbsolute = ({ x = 0, y = 0 }) => {
     this.playerSprite.x = x;
     this.playerSprite.y = y;
-
-    // Avoid the player going off screen
-    this.limitPlayerX();
-    this.limitPlayerY();
+    this.keepPlayerInScreen();
   };
 
   movePlayerRelative = ({ x = 0, y = 0 }) => {
     this.playerSprite.x += x;
     this.playerSprite.y += y;
-
-    // Avoid the player going off screen
-    this.limitPlayerX();
-    this.limitPlayerY();
+    this.keepPlayerInScreen();
   };
 
   movePlayerTouch = ({ x = 0, y = 0 }) => {
@@ -97,10 +72,7 @@ export class Screen {
     if (lastTouchX !== firstTouch) {
       playerSprite.x += x - lastTouchX;
       playerSprite.y += y - lastTouchY;
-
-      // Avoid the player going off screen
-      this.limitPlayerX();
-      this.limitPlayerY();
+      this.keepPlayerInScreen();
     }
 
     this.lastTouchX = x;
@@ -108,7 +80,19 @@ export class Screen {
   };
 
   moveBulletRelative({ y = 0 }) {
-    this.bulletSprites.forEach((sprite) => (sprite.y += y));
+    const incrementY = (sprite: Sprite) => (sprite.y += y);
+    const removeOffScreen = (sprite: Sprite) => {
+      const offScreenSafeDistance = -100;
+
+      if (sprite.y < offScreenSafeDistance) {
+        this.removeBullet(sprite);
+      }
+    };
+
+    this.bulletSprites.forEach((sprite) => {
+      incrementY(sprite);
+      removeOffScreen(sprite);
+    });
   }
 
   onWindowResize() {
@@ -129,15 +113,37 @@ export class Screen {
     this.removeLetter(letter);
   }
 
+  private limitPlayerX() {
+    const ship = this.playerSprite;
+
+    const offsetX = ship.width / 2;
+    const maxPlayerX = this.app.renderer.width - offsetX;
+    const minPlayerX = 0 + offsetX;
+
+    ship.x = Math.min(ship.x, maxPlayerX);
+    ship.x = Math.max(ship.x, minPlayerX);
+  }
+
+  private limitPlayerY() {
+    const ship = this.playerSprite;
+
+    const offsetYBottom = ship.height / 2;
+    const minPlayerY = this.app.renderer.height / 2;
+    const maxPlayerY = this.app.renderer.height - offsetYBottom;
+
+    ship.y = Math.min(ship.y, maxPlayerY);
+    ship.y = Math.max(ship.y, minPlayerY);
+  }
+
   private removeBullet(bullet: Sprite) {
     const { bulletSprites, screenDrawer } = this;
-    this.bulletSprites = bulletSprites.filter((sprite) => sprite !== bullet);
+    this.bulletSprites = withoutSprite(bulletSprites, bullet);
     screenDrawer.removeSprite(bullet);
   }
 
   private removeLetter(letter: Sprite) {
     const { letterSprites, screenDrawer } = this;
-    this.letterSprites = letterSprites.filter((sprite) => sprite !== letter);
+    this.letterSprites = withoutSprite(letterSprites, letter);
     screenDrawer.removeSprite(letter);
   }
 
@@ -181,6 +187,11 @@ export class Screen {
     const y = app.renderer.height - app.renderer.height / 5;
 
     this.screenDrawer.addPlayer({ playerSprite, x, y });
+  };
+
+  private keepPlayerInScreen = () => {
+    this.limitPlayerX();
+    this.limitPlayerY();
   };
 
   /** Spawn on top of the player */
