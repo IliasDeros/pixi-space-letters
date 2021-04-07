@@ -38,7 +38,7 @@ export class Game {
     };
 
     screen.movePlayerRelative({
-      x: adjustSpeed(playerSpeedRight) + playerSpeedLeft
+      x: adjustSpeed(playerSpeedRight) + adjustSpeed(playerSpeedLeft)
     });
     screen.moveBulletRelative({ y: adjustSpeed(bulletSpeedY) });
     this.shootLetters();

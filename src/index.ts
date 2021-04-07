@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Controller } from "./Controller";
-import { InputHandler } from "./InputHandler";
+import { InputManager } from "./InputManager";
 import { Game } from "./Game";
 import { Screen } from "./Screen";
 
@@ -20,7 +20,7 @@ const screen = new Screen({ app });
 
 // InputHandler - EASY :)
 // keyboard input: Tell the game "right is being pressed/released"
-const inputHandler = new InputHandler({ app });
+const inputManager = new InputManager({ app });
 
 // Game
 // This runs the game loop
@@ -31,7 +31,7 @@ const game = new Game({ screen });
 // Controller
 // update game data on input
 // update game data on collision
-const controller = new Controller({ inputHandler, game, screen });
+const controller = new Controller({ inputManager, game, screen });
 
 // Util for logging
 let frameCounter = 0;

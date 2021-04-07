@@ -1,20 +1,20 @@
-import { InputHandler } from "./InputHandler";
+import { InputManager } from "./InputManager";
 import { Game } from "./Game";
 import { Screen } from "./Screen";
 
 export type ControllerProps = {
-  inputHandler: InputHandler;
+  inputManager: InputManager;
   game: Game;
   screen: Screen;
 };
 
 export class Controller {
-  inputHandler: InputHandler;
+  inputManager: InputManager;
   game: Game;
   screen: Screen;
 
-  constructor({ inputHandler, game, screen }: ControllerProps) {
-    this.inputHandler = inputHandler;
+  constructor({ inputManager, game, screen }: ControllerProps) {
+    this.inputManager = inputManager;
     this.game = game;
     this.screen = screen;
   }
@@ -24,15 +24,15 @@ export class Controller {
   }
 
   private handleInput() {
-    const { inputHandler, game, screen } = this;
+    const { inputManager, game, screen } = this;
 
-    inputHandler.onPressRight(game.movePlayerRight);
-    inputHandler.onPressLeft(game.movePlayerLeft);
-    inputHandler.onMouseMove(screen.movePlayerAbsolute);
-    inputHandler.onTouchMove(screen.movePlayerTouch);
-    inputHandler.onTouchEnd(screen.resetPlayerTouch);
-    inputHandler.onReleaseRight(game.stopPlayerRight);
-    inputHandler.onReleaseLeft(game.stopPlayerLeft);
-    inputHandler.onPressShoot(screen.addBullet);
+    inputManager.onPressRight(game.movePlayerRight);
+    inputManager.onPressLeft(game.movePlayerLeft);
+    inputManager.onMouseMove(screen.movePlayerAbsolute);
+    inputManager.onTouchMove(screen.movePlayerTouch);
+    inputManager.onTouchEnd(screen.resetPlayerTouch);
+    inputManager.onReleaseRight(game.stopPlayerRight);
+    inputManager.onReleaseLeft(game.stopPlayerLeft);
+    inputManager.onPressShoot(screen.addBullet);
   }
 }
