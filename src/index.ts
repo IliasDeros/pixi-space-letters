@@ -18,19 +18,18 @@ PIXI.utils.clearTextureCache(); // Reset cache between reloads
 // collisions: Tell the Controller "bullet collided with player"
 const screen = new Screen({ app });
 
-// InputHandler - EASY :)
-// keyboard input: Tell the game "right is being pressed/released"
+// InputHandler
+// Keyboard/touch input: Tell the game "right is being pressed/released"
 const inputManager = new InputManager({ app });
 
 // Game
 // This runs the game loop
 // Destroy things on collision
-// Tell the screen to move
+// Tell the screen to move images
 const game = new Game({ screen });
 
 // Controller
-// update game data on input
-// update game data on collision
+// coordinate the input with the game & screen
 const controller = new Controller({ inputManager, game, screen });
 
 // Logging every frame crashes codesandbox
