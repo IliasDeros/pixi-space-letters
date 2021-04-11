@@ -79,8 +79,8 @@ export class ScreenDrawer {
   addText({ text, x, y }: AddTextProps) {
     const textElement = this.generateText(text);
 
-    textElement.x = x;
-    textElement.y = y;
+    textElement.x = x + textElement.width / 2;
+    textElement.y = y + textElement.height / 2;
 
     this.app.stage.addChild(textElement);
     return textElement;

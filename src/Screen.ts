@@ -1,10 +1,12 @@
 import { Application, Sprite, Texture } from "pixi.js";
 import { ScreenCollision } from "./ScreenCollision";
 import { ScreenDrawer } from "./ScreenDrawer";
+import { bulletSpeedY } from "./Game";
 
 export const withoutSprite = (sprites: Sprite[], spriteToRemove: Sprite) => {
   return sprites.filter((sprite) => sprite !== spriteToRemove);
 };
+
 export const firstTouch = -1;
 
 export type ScreenProps = {
@@ -21,6 +23,7 @@ export class Screen {
   app: Application;
   bulletSprites: Sprite[] = [];
   letterSprites: Sprite[] = [];
+  deadLetterSprites: Sprite[] = [];
   playerSprite!: Sprite;
   screenDrawer!: ScreenDrawer;
   lastTouchX = firstTouch;
@@ -41,6 +44,20 @@ export class Screen {
     const spawn = this.getBulletSpawn();
     const bulletSprite = this.screenDrawer.addBullet(spawn);
     this.bulletSprites.push(bulletSprite);
+  };
+
+  animateDeadLetters = ({ alphaFactor = 0, rotateFactor = 0, speedY = 0 }) => {
+    const { deadLetterSprites } = this;
+
+    deadLetterSprites.forEach((letter) => {
+      letter.y += speedY;
+      letter.rotation += rotateFactor;
+      letter.alpha += alphaFactor;
+
+      if (letter.y <= -100) {
+        this.removeDeadLetter(letter);
+      }
+    });
   };
 
   collisionBulletsLetters() {
@@ -110,7 +127,7 @@ export class Screen {
 
   shootLetter(bullet: Sprite, letter: Sprite) {
     this.removeBullet(bullet);
-    this.removeLetter(letter);
+    this.killLetter(letter);
   }
 
   private limitPlayerX() {
@@ -141,10 +158,17 @@ export class Screen {
     screenDrawer.removeSprite(bullet);
   }
 
-  private removeLetter(letter: Sprite) {
-    const { letterSprites, screenDrawer } = this;
-    this.letterSprites = withoutSprite(letterSprites, letter);
+  private removeDeadLetter(letter: Sprite) {
+    const { deadLetterSprites, screenDrawer } = this;
+    this.deadLetterSprites = withoutSprite(deadLetterSprites, letter);
     screenDrawer.removeSprite(letter);
+  }
+
+  private killLetter(letter: Sprite) {
+    const { deadLetterSprites, letterSprites } = this;
+
+    this.letterSprites = withoutSprite(letterSprites, letter);
+    deadLetterSprites.push(letter);
   }
 
   private addText = (text: string) => {
@@ -169,6 +193,8 @@ export class Screen {
           y
         });
 
+        letterSprite.anchor.x = 0.5;
+        letterSprite.anchor.y = 0.5;
         this.letterSprites.push(letterSprite);
 
         return x + letterSprite.width;

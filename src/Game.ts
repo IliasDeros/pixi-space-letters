@@ -3,6 +3,9 @@ import { Screen } from "./Screen";
 /** Speed is in pixels per second */
 export const playerSpeedX = 5;
 export const bulletSpeedY = -8;
+export const deadLetterSpeedY = -5;
+export const deadLetterRotateFactor = 0.05;
+export const deadLetterAlphaFactor = -0.025;
 
 export type GameProps = {
   screen: Screen;
@@ -41,6 +44,11 @@ export class Game {
       x: adjustSpeed(playerSpeedRight) + adjustSpeed(playerSpeedLeft)
     });
     screen.moveBulletRelative({ y: adjustSpeed(bulletSpeedY) });
+    screen.animateDeadLetters({
+      alphaFactor: adjustSpeed(deadLetterAlphaFactor),
+      rotateFactor: adjustSpeed(deadLetterRotateFactor),
+      speedY: adjustSpeed(deadLetterSpeedY)
+    });
     this.shootLetters();
   }
 
