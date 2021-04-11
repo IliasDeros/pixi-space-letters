@@ -1,7 +1,6 @@
 import { Application, Sprite, Texture } from "pixi.js";
 import { ScreenCollision } from "./ScreenCollision";
 import { ScreenDrawer } from "./ScreenDrawer";
-import { bulletSpeedY } from "./Game";
 
 export const withoutSprite = (sprites: Sprite[], spriteToRemove: Sprite) => {
   return sprites.filter((sprite) => sprite !== spriteToRemove);
