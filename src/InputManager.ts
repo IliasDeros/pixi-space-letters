@@ -17,6 +17,7 @@ export class InputManager {
   document: Document | DocumentMock;
   window: Window | WindowMock;
   input: InputHandler;
+  fireIntervalId?: number | void
 
   constructor({ app, documentMock, windowMock }: InputHandlerProps) {
     this.app = app;
@@ -42,23 +43,19 @@ export class InputManager {
   }
 
   onPressShoot(fire: () => void) {
-    const { clearInterval, setInterval, setTimeout } = this.window
+    const { clearInterval, setInterval } = this.window
     const dom = this.document;
-    
-    let intervalId: number | void
-    let canShoot = true
 
     const fireAtInterval = () => {
-      if (!canShoot) {
+      if (this.fireIntervalId) {
         return
       }
       
-      canShoot = false
       fire()
-      intervalId ||= setInterval(fire, shootDelayMs)       
-      setTimeout(() => { canShoot = true }, shootDelayMs)
+      this.fireIntervalId = setInterval(fire, shootDelayMs)
     }
-    const cancelInterval = () => intervalId &&= clearInterval(intervalId)
+
+    const cancelInterval = () => this.fireIntervalId &&= clearInterval(this.fireIntervalId) 
 
     // start firing
     dom.addEventListener("mousedown", fireAtInterval);

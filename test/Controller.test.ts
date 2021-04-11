@@ -38,14 +38,15 @@ describe("Controller", () => {
     } as unknown) as Application;
     documentMock = new DocumentMock();
     windowMock = {
-      clearInterval: jest.fn(),
-      setInterval: jest.fn(),
-      setTimeout: jest.fn()
+      clearInterval() {},
+      setInterval: jest.fn(() => 42),
+      setTimeout() {}
     };
 
     // mock screen
     screen = ({
       addBullet: jest.fn(),
+      animateDeadLetters() {},
       collisionBulletsLetters: jest.fn(() => []),
       movePlayerRelative: jest.fn(),
       moveBulletRelative() {},
@@ -106,7 +107,18 @@ describe("Controller", () => {
       expect(screen.addBullet).toHaveBeenCalled();
     });
 
-    it("fires every interval on space press", async () => {
+    it("cannot fire before the interval is done", async () => {
+      startController();
+
+      await dispatchShoot();
+      game.loop();
+      await dispatchShoot();
+      game.loop();
+
+      expect(screen.addBullet).toHaveBeenCalledTimes(1);
+    });
+
+    it("fires every interval on space hold", async () => {
       startController();
 
       await dispatchShoot();
@@ -116,33 +128,6 @@ describe("Controller", () => {
       game.loop();
 
       expect(screen.addBullet).toHaveBeenCalledTimes(2);
-    });
-
-    describe("#canShoot", () => {
-      it("cannot fire before the interval is done", async () => {
-        startController();
-
-        await dispatchShoot();
-        game.loop();
-        await dispatchShoot();
-        game.loop();
-
-        expect(screen.addBullet).toHaveBeenCalledTimes(1);
-      });
-
-      it("can fire again after the interval", async () => {
-        startController();
-
-        await dispatchShoot();
-        game.loop();
-        const canShootTimeout = (windowMock.setTimeout as jest.Mock).mock
-          .calls[0][0];
-        canShootTimeout();
-        await dispatchShoot();
-        game.loop();
-
-        expect(screen.addBullet).toHaveBeenCalledTimes(2);
-      });
     });
   });
 });
