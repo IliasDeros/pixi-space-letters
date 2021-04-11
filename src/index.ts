@@ -53,7 +53,7 @@ app.loader
     // Set up view
     screen.initialize({
       bulletTexture: resources.bullet.texture,
-      text: "JC JIMMY",
+      text: "iLiAS dERoS",
       ship: ship
     });
     controller.start();

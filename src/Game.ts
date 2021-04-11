@@ -65,10 +65,10 @@ export class Game {
   }
 
   private shootLetters() {
-    const collisions = this.screen.collisionBulletsLetters();
+    const [shotLetter] = this.screen.collisionBulletsLetters();
 
-    collisions.forEach((collision) =>
-      this.screen.shootLetter(collision.bullet, collision.letter)
-    );
+    if (shotLetter) {
+      this.screen.shootLetter(shotLetter.bullet, shotLetter.letter);
+    }
   }
 }

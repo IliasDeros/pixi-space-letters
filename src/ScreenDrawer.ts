@@ -90,7 +90,7 @@ export class ScreenDrawer {
     return new PIXI.Text(text, {
       align: "center",
       fill: 0x4cbb17,
-      fontFamily: "Arial Black",
+      fontFamily: "starjedi, Arial Black",
       fontSize: 64,
       wordWrap: true
     });

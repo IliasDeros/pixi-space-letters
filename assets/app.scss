@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "starjedi";
+  src: url("assets/starjedi.ttf");
+}
+
+/* Make the pixi canvas full screen */
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: #071335;
+}
