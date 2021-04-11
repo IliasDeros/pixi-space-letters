@@ -55,7 +55,7 @@ app.loader
       text: "SPacE lETTERS",
       ship: ship
     });
-    controller.start();
+    controller.enableBasicMoves();
     window.onresize = () => screen.onWindowResize();
 
     // Listen for frame updates

@@ -19,7 +19,7 @@ export class Controller {
     this.screen = screen;
   }
 
-  start() {
+  enableBasicMoves() {
     this.handleInput();
   }
 
