@@ -33,7 +33,7 @@ const game = new Game({ screen });
 // update game data on collision
 const controller = new Controller({ inputManager, game, screen });
 
-// Util for logging
+// Logging every frame crashes codesandbox
 let frameCounter = 0;
 function logGameMessage() {
   frameCounter++;
