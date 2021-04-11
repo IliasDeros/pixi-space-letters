@@ -113,7 +113,22 @@ export class Screen {
   }
 
   onWindowResize() {
-    this.screenDrawer.onWindowResize();
+    const { app, letterSprites, playerSprite, screenDrawer } = this;
+    const widthDifference = window.innerWidth - app.renderer.width;
+    const heightDifference = window.innerHeight - app.renderer.height;
+
+    // Reposition player
+    playerSprite.x += widthDifference / 2;
+    playerSprite.y += heightDifference / 2;
+
+    // Reposition letters
+    letterSprites.forEach((letter) => {
+      letter.x += widthDifference / 2;
+      letter.y += heightDifference / 8;
+    });
+
+    // Re-draw stage
+    screenDrawer.onWindowResize();
   }
 
   resetPlayerTouch = () => {

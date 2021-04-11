@@ -29,7 +29,7 @@ export class ScreenDrawer {
 
     app.renderer.view.style.position = "absolute";
     app.renderer.view.style.display = "block";
-    app.renderer.resize(window.innerWidth, window.innerHeight);
+    this.onWindowResize();
   }
 
   addBullet({ x, y }: { x: number; y: number }) {
@@ -97,6 +97,7 @@ export class ScreenDrawer {
   }
 
   onWindowResize() {
+    this.app.renderer.resize(window.innerWidth, window.innerHeight);
     this.stars.renderFullScreen();
   }
 }
