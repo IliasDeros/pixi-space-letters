@@ -1,6 +1,8 @@
 @font-face {
+  font-display: swap;
   font-family: "starjedi";
-  src: url("assets/starjedi.ttf");
+  src: url("assets/starjedi.woff2") format("woff2"),
+       url("assets/starjedi.woff") format("woff");
 }
 
 /* Make the pixi canvas full screen */
