@@ -62,7 +62,7 @@ describe("Controller", () => {
         windowMock
       });
       const controller = new Controller({ inputManager, game, screen });
-      controller.start();
+      controller.enableBasicMoves();
       return controller;
     };
   });
