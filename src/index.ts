@@ -56,7 +56,7 @@ app.loader
       ship: ship
     });
     controller.enableBasicMoves();
-    window.onresize = () => screen.onWindowResize();
+    window.onresize = screen.onWindowResize;
 
     // Listen for frame updates
     app.ticker.add((delta) => {

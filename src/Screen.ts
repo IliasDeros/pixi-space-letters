@@ -1,6 +1,7 @@
 import { Application, Sprite, Texture } from "pixi.js";
 import { ScreenCollision } from "./ScreenCollision";
 import { ScreenDrawer } from "./ScreenDrawer";
+import { ScreenResizer } from "./ScreenResizer";
 
 export const withoutSprite = (sprites: Sprite[], spriteToRemove: Sprite) => {
   return sprites.filter((sprite) => sprite !== spriteToRemove);
@@ -25,11 +26,13 @@ export class Screen {
   deadLetterSprites: Sprite[] = [];
   playerSprite!: Sprite;
   screenDrawer!: ScreenDrawer;
+  screenResizer: ScreenResizer;
   lastTouchX = firstTouch;
   lastTouchY = firstTouch;
 
   constructor({ app }: ScreenProps) {
     this.app = app;
+    this.screenResizer = new ScreenResizer({ app });
   }
 
   initialize({ bulletTexture, ship, text }: ScreenInitializeProps) {
@@ -111,24 +114,9 @@ export class Screen {
     });
   }
 
-  onWindowResize() {
-    const { app, letterSprites, playerSprite, screenDrawer } = this;
-    const widthDifference = window.innerWidth - app.renderer.width;
-    const heightDifference = window.innerHeight - app.renderer.height;
-
-    // Reposition player
-    playerSprite.x += widthDifference / 2;
-    playerSprite.y += heightDifference / 2;
-
-    // Reposition letters
-    letterSprites.forEach((letter) => {
-      letter.x += widthDifference / 2;
-      letter.y += heightDifference / 8;
-    });
-
-    // Re-draw stage
-    screenDrawer.onWindowResize();
-  }
+  onWindowResize = () => {
+    this.screenResizer.onWindowResize(this);
+  };
 
   resetPlayerTouch = () => {
     this.lastTouchX = firstTouch;
