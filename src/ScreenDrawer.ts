@@ -97,7 +97,11 @@ export class ScreenDrawer {
   }
 
   onWindowResize() {
-    this.app.renderer.resize(window.innerWidth, window.innerHeight);
+    // On android, the "outer" width is smaller than the innerWidth
+    const width = Math.min(window.innerWidth, window.outerWidth);
+    const height = Math.min(window.innerHeight, window.outerHeight);
+
+    this.app.renderer.resize(width, height);
     this.stars.renderFullScreen();
   }
 }
